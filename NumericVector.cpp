@@ -3,8 +3,9 @@
 //
 
 #include "NumericVector.h"
-#include <random>
+#include <cassert>
 #include <iostream>
+#include <random>
 
 using namespace std;
 
