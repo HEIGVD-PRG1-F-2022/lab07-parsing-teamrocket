@@ -32,6 +32,11 @@ vector<Step> str_to_tour(string s) {
     return ret;
 }
 
+std::ostream &operator<<(std::ostream &out, const Tunnels &t){
+    (void)t;
+    return out;
+}
+
 void test_tunnels() {
     Tunnels sample("../sample-input.txt");
     unsigned rate = sample.calc_rate(
