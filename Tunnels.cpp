@@ -57,10 +57,8 @@ Tunnels::Tunnels(const string &file) {
 
 unsigned Tunnels::calc_rate(const vector<Step> &tour, unsigned length) {
     unsigned sumOfGazOutput = 0;
-
-    for(auto &step : tour) {
-        if(length <= 0) break;
-
+    for(auto const &step : tour) {
+        if(length < 2) break;
         if(step.open) {
             sumOfGazOutput += rates[step.valve] * --length;
         }
