@@ -19,29 +19,39 @@ Tunnels::Tunnels(const string &file) {
         if (line.empty()) {
             break;
         }
+        try{
+            // Valve name
+            string valveName = line.substr(6, 2);
+            if(valveName.length() < 2 || valveName.length() > 2){
+                throw length_error("Valve name is invalid!");
+            }
+            this->valves.push_back(valveName);
+            
+            // Valve rate
+            short ratePosOffset = 1;
+            size_t rateStartPos = line.find('=') + ratePosOffset;
+            size_t rateEndPos = line.find(';') - rateStartPos;
+            unsigned rate = stoi(line.substr(rateStartPos, rateEndPos));
+            if(rateStartPos <= 0 || rateEndPos > line.length() || rateEndPos == string::npos){
+                throw length_error("Rate formatting is invalid!");
+            }
+            this->rates[valveName] = rate;
 
-        // Valve name
-        string valveName = line.substr(6, 2);
-        this->valves.push_back(valveName);
+            // Valve links
+            string linksStrPart = line.substr(line.find("to valve"), line.length());
+            size_t linksStartPos = linksStrPart.find(' ', 4);
+            size_t linksEndPos = linksStrPart.length() - linksStartPos;
+            if(linksEndPos <= 0 || linksEndPos > linksStrPart.length()){
+                throw length_error("Links formatting is invalid!");
+            }
+            vector<string> linksTunnel;
+            istringstream split(linksStrPart.substr(linksStartPos, linksEndPos));
+            for (string link; getline(split, link, ','); linksTunnel.push_back(link.substr(1, link.length())));
 
-        // Valve rate
-        short ratePosOffset = 1;
-        size_t rateStartPos = line.find('=') + ratePosOffset;
-        size_t rateEndPos = line.find(';') - rateStartPos;
-        unsigned rate = stoi(line.substr(rateStartPos, rateEndPos));
-        this->rates[valveName] = rate;
-
-        // Valve links
-        short linksPosOffset = 3;
-        string linksStrPart = line.substr(line.find("to valve"), line.length());
-        size_t linksStartPos = linksStrPart.find(" ", 4);
-        size_t linksEndPos = linksStrPart.length() - linksStartPos;
-
-        vector<string> linksTunnel;
-        istringstream split(linksStrPart.substr(linksStartPos, linksEndPos));
-        for (string link; getline(split, link, ','); linksTunnel.push_back(link.substr(1, link.length())));
-
-        this->links[valveName] = linksTunnel;
+            this->links[valveName] = linksTunnel;
+        } catch (exception& e) {
+            cout << e.what() << endl;
+        }
     }
 }
 
