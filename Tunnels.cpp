@@ -56,8 +56,17 @@ Tunnels::Tunnels(const string &file) {
 }
 
 unsigned Tunnels::calc_rate(const vector<Step> &tour, unsigned length) {
-    // TODO
-    return 0;
+    unsigned sumOfGazOutput = 0;
+
+    for(auto &step : tour) {
+        if(length <= 0) break;
+
+        if(step.open) {
+            sumOfGazOutput += rates[step.valve] * --length;
+        }
+        --length;
+    }
+    return sumOfGazOutput;
 }
 
 vector<Step> str_to_tour(string s) {
@@ -72,8 +81,8 @@ vector<Step> str_to_tour(string s) {
     return ret;
 }
 
-std::ostream &operator<<(std::ostream &out, const Tunnels &t){
-    (void)t;
+std::ostream &operator<<(std::ostream &out, const Tunnels &t) {
+    (void) t;
     return out;
 }
 
@@ -83,5 +92,6 @@ void test_tunnels() {
             str_to_tour(
                     "AA DD_ CC BB_ AA II JJ_ II AA DD EE FF GG HH_ GG FF EE_ DD CC_"),
             30);
+
     assert(rate == 1651);
 }
